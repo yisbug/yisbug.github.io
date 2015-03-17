@@ -189,6 +189,73 @@
 <li>enable <code>handleUpgrade</code> when creating the server</li>
 </ul>
 <figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ws = <span class="keyword">new</span> Watershed()</span><br><span class="line">server.get <span class="string">'/websocket/attach'</span>,<span class="function"><span class="params">(req,res,next)</span>-&gt;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> res.claimUpgrade</span><br><span class="line">        <span class="keyword">return</span> next <span class="keyword">new</span> Error <span class="string">'Connction Must Upgrade For WebSockets.'</span></span><br><span class="line">    upgrade = res.claimUpgrade()</span><br><span class="line">    shed = ws.accept req,upgrade.socket,upgrade.head</span><br><span class="line">    shed.<span class="literal">on</span> <span class="string">'text'</span>,<span class="function"><span class="params">(msg)</span>-&gt;</span></span><br><span class="line">        <span class="built_in">console</span>.log <span class="string">'Recevied message from websocket client:'</span>+msg</span><br><span class="line">    shed.send <span class="string">'hello world.'</span></span><br><span class="line">    next <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h3 id="content_negotiation">content negotiation</h3><p>默认情况下<code>res.send()</code>会自动选择<code>content-type</code>返回，也可以自定义<code>parser</code>。<br><code>restify</code>自身有以下几种三种<code>formatters</code>对应的<code>content-types</code></p>
+<ul>
+<li><code>application/json</code></li>
+<li><code>text/plain</code></li>
+<li><code>application/octet-stream</code></li>
+</ul>
+<figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">server = restify.createServer</span><br><span class="line">    <span class="attribute">formatters</span>:</span><br><span class="line">        <span class="string">'application/foo'</span>:<span class="function"><span class="params">(req,res,body)</span>-&gt;</span></span><br><span class="line">            <span class="keyword">if</span> body <span class="keyword">instanceof</span> Error</span><br><span class="line">                <span class="keyword">return</span> body.stack</span><br><span class="line">            <span class="keyword">if</span> Buffer.isBuffer body</span><br><span class="line">                <span class="keyword">return</span> body.toString <span class="string">'base64'</span></span><br><span class="line">            <span class="keyword">return</span> util.inspect body</span><br></pre></td></tr></table></figure>
+<p>then:</p>
+<figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">res.setHeader <span class="string">'content-type'</span>,<span class="string">'application/foo'</span></span><br><span class="line">res.send <span class="attribute">hello</span>:<span class="string">'world'</span></span><br></pre></td></tr></table></figure>
+<p>如果覆盖默认的几种<code>formatters</code>，会改变<code>priority</code>优先级，可以设置一个<code>q-value</code>，例如：<br><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">restify.createServer</span><br><span class="line">    <span class="attribute">formatters</span>:</span><br><span class="line">        <span class="string">'application/foo;q=0.9'</span>,<span class="function"><span class="params">(req,res,body)</span>-&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="错误处理">错误处理</h3><p>examples:<br><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">next err <span class="comment"># 返回500</span></span><br><span class="line">res.send <span class="number">4</span>xx,<span class="keyword">new</span> Error(<span class="string">'xxx'</span>) <span class="comment"># 返回指定http状态码</span></span><br><span class="line">res.send &#123;&#125; <span class="comment"># 返回200</span></span><br><span class="line">next.ifError err <span class="comment"># restify 2.1 supports</span></span><br></pre></td></tr></table></figure></p>
+<p>handle an error condition:<br><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.<span class="literal">on</span> <span class="string">'InternalServerError'</span>,<span class="function"><span class="params">(req,res,err,cb)</span>-&gt;</span></span><br><span class="line">    err._customContent = <span class="string">'something...'</span></span><br><span class="line">    <span class="keyword">return</span> cb()</span><br></pre></td></tr></table></figure></p>
+<h3 id="常见错误列表">常见错误列表</h3><ul>
+<li>BadRequestError (400 bad request)</li>
+<li>UnauthorizedError (401 Unauthorized)</li>
+<li>PaymentRequiredError (402 Payment Required)</li>
+<li>ForbiddenError (403 Forbidden)</li>
+<li>NotFoundError (404 Not Found)</li>
+<li>MethodNotAllowedError (405 Method Not Allowed)</li>
+<li>NotAcceptableError (406 Not Acceptable)</li>
+<li>ProxyAuthenticationRequiredError (407 Proxy Authentication Required)</li>
+<li>RequestTimeoutError (408 Request Time-out)</li>
+<li>ConflictError (409 Conflict)</li>
+<li>GoneError (410 Gone)</li>
+<li>LengthRequiredError (411 Length Required)</li>
+<li>PreconditionFailedError (412 Precondition Failed)</li>
+<li>RequestEntityTooLargeError (413 Request Entity Too Large)</li>
+<li>RequesturiTooLargeError (414 Request-URI Too Large)</li>
+<li>UnsupportedMediaTypeError (415 Unsupported Media Type)</li>
+<li>RequestedRangeNotSatisfiableError (416 Requested Range Not Satisfiable)</li>
+<li>ExpectationFailedError (417 Expectation Failed)</li>
+<li>ImATeapotError (418 I’m a teapot)</li>
+<li>UnprocessableEntityError (422 Unprocessable Entity)</li>
+<li>LockedError (423 Locked)</li>
+<li>FailedDependencyError (424 Failed Dependency)</li>
+<li>UnorderedCollectionError (425 Unordered Collection)</li>
+<li>UpgradeRequiredError (426 Upgrade Required)</li>
+<li>PreconditionRequiredError (428 Precondition Required)</li>
+<li>TooManyRequestsError (429 Too Many Requests)</li>
+<li>RequestHeaderFieldsTooLargeError (431 Request Header Fields Too Large)</li>
+<li>InternalServerError (500 Internal Server Error)</li>
+<li>NotImplementedError (501 Not Implemented)</li>
+<li>BadGatewayError (502 Bad Gateway)</li>
+<li>ServiceUnavailableError (503 Service Unavailable)</li>
+<li>GatewayTimeoutError (504 Gateway Time-out)</li>
+<li>HttpVersionNotSupportedError (505 HTTP Version Not Supported)</li>
+<li>VariantAlsoNegotiatesError (506 Variant Also Negotiates)</li>
+<li>InsufficientStorageError (507 Insufficient Storage)</li>
+<li>BandwidthLimitExceededError (509 Bandwidth Limit Exceeded)</li>
+<li>NotExtendedError (510 Not Extended)</li>
+<li>NetworkAuthenticationRequiredError (511 Network Authentication Required)</li>
+<li>BadDigestError (400 Bad Request)</li>
+<li>BadMethodError (405 Method Not Allowed)</li>
+<li>InternalError (500 Internal Server Error)</li>
+<li>InvalidArgumentError (409 Conflict)</li>
+<li>InvalidContentError (400 Bad Request)</li>
+<li>InvalidCredentialsError (401 Unauthorized)</li>
+<li>InvalidHeaderError (400 Bad Request)</li>
+<li>InvalidVersionError (400 Bad Request)</li>
+<li>MissingParameterError (409 Conflict)</li>
+<li>NotAuthorizedError (403 Forbidden)</li>
+<li>RequestExpiredError (400 Bad Request)</li>
+<li>RequestThrottledError (429 Too Many Requests)</li>
+<li>ResourceNotFoundError (404 Not Found)</li>
+<li>WrongAcceptError (406 Not Acceptable)</li>
+</ul>
+<h3 id="自定义错误">自定义错误</h3><p>``` coffee<br>util = require ‘util’<br>MyError = (message)-&gt;<br>    restify.RestError.call this,{<br>        restCode:’MyError’<br>        statusCode:418<br>        message:message<br>        contructorOpt: MyError<br>    }<br>    this.name = ‘MyError’<br>util.inherits MyError,restify.RestError</p>
 
       
     </div>
