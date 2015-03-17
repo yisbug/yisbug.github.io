@@ -130,7 +130,7 @@
       <ul>
         
           <li>
-            <a href="http://hexo.io">Hexo</a>
+            <a href="http://github.com/yisbug">My Github</a>
           </li>
         
       </ul>
@@ -184,6 +184,11 @@
 <h3 id="Hypermedia">Hypermedia</h3><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server.get &#123;<span class="attribute">name</span>:<span class="string">'city'</span>,<span class="attribute">path</span>:<span class="string">'cities/:slug'</span>&#125;,<span class="function"><span class="params">(req,res,next)</span>-&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在另外一个处理过程中可以交给上面的处理过程</span></span><br><span class="line">res.send</span><br><span class="line">    <span class="attribute">country</span>:<span class="string">'Australia'</span></span><br><span class="line">    <span class="attribute">capital</span>:server.router.render(<span class="string">'city'</span>,&#123;<span class="attribute">slug</span>:<span class="string">'canberra'</span>&#125;,&#123;<span class="attribute">details</span>:<span class="literal">true</span>&#125;)</span><br><span class="line"><span class="comment"># 相当于</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"country"</span>:<span class="string">'Australia'</span></span><br><span class="line">    <span class="attribute">capital</span>:<span class="string">'cities/canberral?details=true'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="versioned_routes">versioned routes</h3><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.get &#123;<span class="attribute">path</span>:<span class="string">'/foo'</span>,<span class="attribute">version</span>:<span class="string">'1.1'</span>&#125;,<span class="function"><span class="params">(req,res,next)</span>-&gt;</span></span><br><span class="line">server.get &#123;<span class="attribute">path</span>:<span class="string">'/foo'</span>,<span class="attribute">version</span>:<span class="string">'1.2'</span>&#125;,<span class="function"><span class="params">(req,res,next)</span>-&gt;</span></span><br><span class="line">server.get &#123;<span class="attribute">path</span>:<span class="string">'/foo'</span>,<span class="attribute">version</span>:[<span class="string">'1.1'</span>,<span class="string">'1.2'</span>]&#125;,<span class="function"><span class="params">(req,res,next)</span>-&gt;</span></span><br></pre></td></tr></table></figure>
 <p>请求时可在http头添加<code>accept-version</code>字段。</p>
+<h3 id="upgrade_requests">upgrade requests</h3><ul>
+<li>http requests contain <code>Connection: Upgrade</code></li>
+<li>enable <code>handleUpgrade</code> when creating the server</li>
+</ul>
+<figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ws = <span class="keyword">new</span> Watershed()</span><br><span class="line">server.get <span class="string">'/websocket/attach'</span>,<span class="function"><span class="params">(req,res,next)</span>-&gt;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> res.claimUpgrade</span><br><span class="line">        <span class="keyword">return</span> next <span class="keyword">new</span> Error <span class="string">'Connction Must Upgrade For WebSockets.'</span></span><br><span class="line">    upgrade = res.claimUpgrade()</span><br><span class="line">    shed = ws.accept req,upgrade.socket,upgrade.head</span><br><span class="line">    shed.<span class="literal">on</span> <span class="string">'text'</span>,<span class="function"><span class="params">(msg)</span>-&gt;</span></span><br><span class="line">        <span class="built_in">console</span>.log <span class="string">'Recevied message from websocket client:'</span>+msg</span><br><span class="line">    shed.send <span class="string">'hello world.'</span></span><br><span class="line">    next <span class="literal">false</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -221,8 +226,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       <a href="/" class="logo">yisbug&#39;s blog</a>
-      &copy; 2015 YinG<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      &copy; 2015 YinG
     </div>
   </div>
 </footer>
