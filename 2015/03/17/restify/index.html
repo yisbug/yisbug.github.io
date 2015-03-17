@@ -5,15 +5,18 @@
   
   <title>restify | yisbug&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="restify常用功能描述，方便随时查找。">
+  <meta name="description" content="restify是我经常用到的node server模块，实际应用时经常因为不熟悉细节用法，需要查看官方文档，比较麻烦。
+这次把官方文档扒了一遍，整理此文，侧重不太常用或不太熟悉的用法，方便查找。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="restify">
 <meta property="og:url" content="http://yisbug.github.io/2015/03/17/restify/index.html">
 <meta property="og:site_name" content="yisbug's blog">
-<meta property="og:description" content="restify常用功能描述，方便随时查找。">
+<meta property="og:description" content="restify是我经常用到的node server模块，实际应用时经常因为不熟悉细节用法，需要查看官方文档，比较麻烦。
+这次把官方文档扒了一遍，整理此文，侧重不太常用或不太熟悉的用法，方便查找。">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="restify">
-<meta name="twitter:description" content="restify常用功能描述，方便随时查找。">
+<meta name="twitter:description" content="restify是我经常用到的node server模块，实际应用时经常因为不熟悉细节用法，需要查看官方文档，比较麻烦。
+这次把官方文档扒了一遍，整理此文，侧重不太常用或不太熟悉的用法，方便查找。">
   
   
     <link rel="icon" href="/favicon.png">
@@ -166,7 +169,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>restify常用功能描述，方便随时查找。<br><a id="more"></a></p>
+        <p>restify是我经常用到的node server模块，实际应用时经常因为不熟悉细节用法，需要查看官方文档，比较麻烦。</p>
+<p>这次把官方文档扒了一遍，整理此文，侧重不太常用或不太熟悉的用法，方便查找。<br><a id="more"></a></p>
 <h2 id="restify">restify</h2><h3 id="create">create</h3><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">restify = <span class="built_in">require</span> <span class="string">'restify'</span></span><br><span class="line">server = restify.createServer</span><br><span class="line">    <span class="attribute">certificate</span>:  <span class="comment"># https</span></span><br><span class="line">    <span class="attribute">key</span>: <span class="comment"># https</span></span><br><span class="line">    <span class="attribute">formatters</span>: <span class="comment"># object 自定义res formatters for res.send()</span></span><br><span class="line">    <span class="attribute">log</span>: <span class="comment"># object 非必要，可以传入一个bunyan实例</span></span><br><span class="line">    <span class="attribute">name</span>: <span class="comment"># string ，设置一个response header中server字段，默认为restify</span></span><br><span class="line">    <span class="attribute">spdy</span>: <span class="comment"># object  其他选项 accepted by node-spdy</span></span><br><span class="line">    <span class="attribute">version</span>: <span class="comment"># string 版本</span></span><br><span class="line">    <span class="attribute">handleUpgrades</span>: <span class="comment"># bool  hook the upgrade event from the node http server.默认false</span></span><br><span class="line">    <span class="attribute">httpsServerOptions</span>: <span class="comment"># object.</span></span><br><span class="line">server.listen <span class="number">8080</span>,<span class="function">-&gt;</span></span><br><span class="line">    <span class="built_in">console</span>.log <span class="string">'%s listening at %s'</span>,server.name,server.url</span><br></pre></td></tr></table></figure>
 <h3 id="server-use(fn)">server.use(fn)</h3><p>传入一个function，该function接收(req,res,next)三个参数</p>
 <h3 id="define_routes">define routes</h3><ul>
