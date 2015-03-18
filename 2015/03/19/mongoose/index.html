@@ -221,106 +221,79 @@
 <p>remove函数接受一个查询文档作为可选参数。删除数据时永久性的，不能撤销也不能恢复。<br>db.users.list.remove({“opt-out”:true})</p>
 <h3 id="更新文档">更新文档</h3><p>更新操作是原子的。如果两个更新同时发生，先到达服务器的先执行，最后到达服务器的最后执行。</p>
 <p>两个参数，一个是查询文档，一个时修改器（modifier）文档<br>db.users.update(finddoc,modifier)</p>
-<h4 id="修改器">修改器</h4><p>$inc </p>
-<blockquote>
-<p>增加，键不存在时自动创建。只能用于数字类型的键<br>增加 db.users.update(_id,{“$inc”:{score:50}}) 增加50分</p>
-</blockquote>
-<p>$set </p>
-<blockquote>
-<p>指定一个键的值，如果这个键不存在则创建它<br>可以修改数据类型，也可以修改内嵌文档</p>
-<p>db.users.update({_id:ObjectId(‘asdasdasd’)},{“$set”:{“address”:”test”}})<br>db.users.update(_id,{“$set”:{“author.name”:”joe”}})</p>
-</blockquote>
-<p>$unsert </p>
-<blockquote>
-<p>删除键<br>db.users.update(_id,{“$unsert”:{“address”:1}})</p>
-</blockquote>
-<p>$push</p>
-<blockquote>
-<p>数组修改器，向数组末尾加入一个元素，如果键不存在则创建一个数组<br>db.users.update(_id,{“$push”:{“address”:{“city”:”taiyuan”,”street”:”as”}}})</p>
-</blockquote>
-<p>$ne 使用在查询文档</p>
-<blockquote>
-<p>如果一个值不在数组中就把它加进去<br>db.papers.update({“autjprs cited”:{“$ne”:”Richie”}},{“$push”:{“authors cited”:”Richie”}})</p>
-</blockquote>
-<p>$addToSet</p>
-<blockquote>
-<p>db.users.update(_id,{“$addToSet”:{“emails”:”test@t.com”}})</p>
-</blockquote>
-<p>$each</p>
-<blockquote>
-<p>一次添加多个邮件地址<br>db.users.update(_id,{“$addToSet”:{“emails”:{“$each”:[“a@a.com”,’a@b.com’,’a@c.com’]}}})</p>
-</blockquote>
-<p>$pop</p>
-<blockquote>
-<p>移除一个元素<br>db.lists.update(_id,{“pop”:{“emails”:1})  从末尾移除<br>db.lists.update(_id,{“pop”:{“emails”:-1})  从头部移除</p>
-</blockquote>
-<p>$pull</p>
-<blockquote>
-<p>移除匹配条件的数组元素<br>db.lists.update(_id,{“$pull”:{“email”:”a@a.com”}})</p>
-</blockquote>
-<p>数组定位操作符$</p>
-<blockquote>
-<p>通过位置活着定位操作符$<br>{“$inc”:{“comments.0.votes”:1}} 第一条评论的投票数＋1</p>
-<p>db.blog.update({“comments.author”:”john”,{“$set”:{“comments.$.author”:”jim”}}})</p>
+<h3 id="修改器">修改器</h3><h4 id="$inc">$inc</h4><p>增加，键不存在时自动创建。只能用于数字类型的键<br>增加 db.users.update(_id,{“$inc”:{score:50}}) 增加50分</p>
+<h4 id="$set">$set</h4><p>指定一个键的值，如果这个键不存在则创建它<br>可以修改数据类型，也可以修改内嵌文档</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;_id:ObjectId(<span class="string">'asdasdasd'</span>)&#125;,&#123;<span class="string">"$set"</span>:&#123;<span class="string">"address"</span>:<span class="string">"test"</span>&#125;&#125;)</span><br><span class="line">db.users.update(_id,&#123;<span class="string">"$set"</span>:&#123;<span class="string">"author.name"</span>:<span class="string">"joe"</span>&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="$unsert">$unsert</h4><p>删除键<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(_id,&#123;<span class="string">"$unsert"</span>:&#123;<span class="string">"address"</span>:<span class="number">1</span>&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="$push">$push</h4><p>数组修改器，向数组末尾加入一个元素，如果键不存在则创建一个数组<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(_id,&#123;<span class="string">"$push"</span>:&#123;<span class="string">"address"</span>:&#123;<span class="string">"city"</span>:<span class="string">"taiyuan"</span>,<span class="string">"street"</span>:<span class="string">"as"</span>&#125;&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="$ne_使用在查询文档">$ne 使用在查询文档</h4><p>如果一个值不在数组中就把它加进去<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.papers.update(&#123;<span class="string">"autjprs cited"</span>:&#123;<span class="string">"$ne"</span>:<span class="string">"Richie"</span>&#125;&#125;,&#123;<span class="string">"$push"</span>:&#123;<span class="string">"authors cited"</span>:<span class="string">"Richie"</span>&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="$addToSet">$addToSet</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(_id,&#123;<span class="string">"$addToSet"</span>:&#123;<span class="string">"emails"</span>:<span class="string">"test@t.com"</span>&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="$each">$each</h4><p>一次添加多个邮件地址<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(_id,&#123;<span class="string">"$addToSet"</span>:&#123;<span class="string">"emails"</span>:&#123;<span class="string">"$each"</span>:[<span class="string">"a@a.com"</span>,<span class="string">'a@b.com'</span>,<span class="string">'a@c.com'</span>]&#125;&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="$pop">$pop</h4><p>移除一个元素<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.lists.update(_id,&#123;<span class="string">"pop"</span>:&#123;<span class="string">"emails"</span>:<span class="number">1</span>&#125;)  <span class="comment">//从末尾移除</span></span><br><span class="line">db.lists.update(_id,&#123;<span class="string">"pop"</span>:&#123;<span class="string">"emails"</span>:-<span class="number">1</span>&#125;)  <span class="comment">//从头部移除</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="$pull">$pull</h4><p>移除匹配条件的数组元素<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.lists.update(_id,&#123;<span class="string">"$pull"</span>:&#123;<span class="string">"email"</span>:<span class="string">"a@a.com"</span>&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="数组定位操作符$">数组定位操作符$</h4><p>通过位置活着定位操作符$<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"$inc"</span>:&#123;<span class="string">"comments.0.votes"</span>:<span class="number">1</span>&#125;&#125; <span class="comment">//第一条评论的投票数＋1</span></span><br><span class="line">db.blog.update(&#123;<span class="string">"comments.author"</span>:<span class="string">"john"</span>,&#123;<span class="string">"$set"</span>:&#123;<span class="string">"comments.$.author"</span>:<span class="string">"jim"</span>&#125;&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
 <p>定位符只更新第一个匹配的元素。</p>
-</blockquote>
-<h4 id="upsert">upsert</h4><blockquote>
-<p>如果没有找到符合条件的文档，则insert一个新的文档。如果找到，则更新该文档。<br>db.analytics.update({“url”:”/blog”},{“$inc”:{“visits”:1}},true)<br>第三个参数true表示该次update为upsert</p>
-</blockquote>
-<h3 id="save">save</h3><blockquote>
-<p>文档存在时插入，存在时更新。<br>如果文档包括”_id”键，则会调用upsert，否则调用插入</p>
-</blockquote>
-<h4 id="更新多个文档，使用update的第四个参数">更新多个文档，使用update的第四个参数</h4><blockquote>
-<p>第4个参数true则更新所有文档，为false则只更新第一个符合条件的文档。默认为false<br>db.users.update({birthday:”2014-01-01”,{$set:{gift:”Happy birthday!”}}},false,true)</p>
-</blockquote>
-<h4 id="db-runCommand({getLastError:1})">db.runCommand({getLastError:1})</h4><p>{<br>    “err”:null,<br>    “updatedExisting”:true,//表明对已有的文档进行更新<br>    “n”:5,//说明有5个文档被更新了<br>    “ok”:true<br>}</p>
-<h3 id="findAndModify_命令">findAndModify 命令</h3><blockquote>
-<p>每个键对应如下：<br>findAndModify 字符串，集合名<br>query 查询文档，用来检索文档的条件<br>sort 排序结果的条件<br>update 修改器文档<br>remove boolean，表示是否删除文档<br>new 表示返回的事更新前的文档还是更新后的。默认是更新前的文档</p>
-<p>update和remove只能有一个，必须有一个</p>
-<p>只能处理一个文档，不能直行upsert操作，只能更新已有文档。</p>
-</blockquote>
+<h4 id="upsert">upsert</h4><p>如果没有找到符合条件的文档，则insert一个新的文档。如果找到，则更新该文档。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.analytics.update(&#123;<span class="string">"url"</span>:<span class="string">"/blog"</span>&#125;,&#123;<span class="string">"$inc"</span>:&#123;<span class="string">"visits"</span>:<span class="number">1</span>&#125;&#125;,<span class="literal">true</span>)</span><br></pre></td></tr></table></figure></p>
+<p>第三个参数true表示该次update为upsert</p>
+<h4 id="save">save</h4><p>文档存在时插入，存在时更新。<br>如果文档包括”_id”键，则会调用upsert，否则调用插入</p>
+<h4 id="更新多个文档，使用update的第四个参数">更新多个文档，使用update的第四个参数</h4><p>第4个参数true则更新所有文档，为false则只更新第一个符合条件的文档。默认为false<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;birthday:<span class="string">"2014-01-01"</span>,&#123;$set:&#123;gift:<span class="string">"Happy birthday!"</span>&#125;&#125;&#125;,<span class="literal">false</span>,<span class="literal">true</span>)</span><br></pre></td></tr></table></figure></p>
+<h4 id="db-runCommand({getLastError:1})">db.runCommand({getLastError:1})</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"err"</span>:<span class="literal">null</span>,</span><br><span class="line">    <span class="string">"updatedExisting"</span>:<span class="literal">true</span>,<span class="comment">//表明对已有的文档进行更新</span></span><br><span class="line">    <span class="string">"n"</span>:<span class="number">5</span>,<span class="comment">//说明有5个文档被更新了</span></span><br><span class="line">    <span class="string">"ok"</span>:<span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="findAndModify_命令">findAndModify 命令</h4><p>每个键对应如下：</p>
+<ul>
+<li>findAndModify 字符串，集合名</li>
+<li>query 查询文档，用来检索文档的条件</li>
+<li>sort 排序结果的条件</li>
+<li>update 修改器文档</li>
+<li>remove boolean，表示是否删除文档</li>
+<li>new 表示返回的事更新前的文档还是更新后的。默认是更新前的文档</li>
+<li>update和remove只能有一个，必须有一个<br>只能处理一个文档，不能直行upsert操作，只能更新已有文档。</li>
+</ul>
 <h4 id="插入、删除和更新都是瞬间完成的">插入、删除和更新都是瞬间完成的</h4><h3 id="查询">查询</h3><h4 id="find(条件文档,指定返回的键)">find(条件文档,指定返回的键)</h4><p>findOne的参数和find一致</p>
 <h4 id="指定返回的键">指定返回的键</h4><p>{“username”:1,”email”:1,”address”:0} 表示返回username,email,_id,不返回address</p>
-<h4 id="条件文档">条件文档</h4><p>$lt  &lt;<br>$lte &lt;=<br>$gt &gt;<br>$gte &gt;=<br>$ne &lt;&gt;<br>$or or<br>$in in<br>$nin not in<br>$mod [a,b] 将查询的值除a，若余数等于b则返回该结果<br>$not 元条件句，可用于任何其他条件之上。<br>$exists 键是否存在 db.users.find({“address”:{“$exists”:true}})<br>正则表达式 db.users.find({“name”:/joe/i})</p>
-<blockquote>
+<h4 id="条件文档">条件文档</h4><ul>
+<li>$lt  &lt;</li>
+<li>$lte &lt;=</li>
+<li>$gt &gt;</li>
+<li>$gte &gt;=</li>
+<li>$ne &lt;&gt; </li>
+<li>$or or</li>
+<li>$in in</li>
+<li>$nin not in</li>
+<li>$mod [a,b] 将查询的值除a，若余数等于b则返回该结果</li>
+<li>$not 元条件句，可用于任何其他条件之上。</li>
+<li>$exists 键是否存在 db.users.find({“address”:{“$exists”:true}})</li>
+<li>正则表达式 db.users.find({“name”:/joe/i})</li>
+</ul>
 <p>mongodb使用perl兼容的正则表达式（PCRE）库来匹配正则表达式<br>mongodb可以为前缀型正则表达式（比如/^joe/）查询创建索引，所以这类型的查询会非常高效。</p>
-</blockquote>
-<p>start = new Date(“2014-01-01”)<br>db.users.find({“registered”:{“$lt”:start}})</p>
-<p>db.users.find({“user_id”:{“$in”:[‘1234’,’joe’]}})</p>
-<p>db.users.find({“$or”:[{“user_id”:”joe”},{“age”:20}]) 查找user_id为joe或年龄为20</p>
-<p>db.users.find({“id_num”:{“$mod”:[5,1]}}) 返回id_num为1，6，11，16等的用户<br>db.users.find({“id_num”:{“not”:{“$mod”:[5,1]}}}) 返回id_num不为1,6,11,16等的用户</p>
-<blockquote>
-<p>条件句是内层文档的键，修改器是外层文档的键，可对一个键应用多个条件<br>db.users.find({“age”:{“$lt”:30,”$gt”:20}}) 查找年龄小于30大于20</p>
-</blockquote>
-<h5 id="查询数组">查询数组</h5><p>db.food.insert({“fruit”:[“a”,”b”,”c”]})<br>db.food.find({“fruit”:”a”})</p>
-<blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">start = <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="string">"2014-01-01"</span>)</span><br><span class="line">db.users.find(&#123;<span class="string">"registered"</span>:&#123;<span class="string">"$lt"</span>:start&#125;&#125;)</span><br><span class="line">db.users.find(&#123;<span class="string">"user_id"</span>:&#123;<span class="string">"$in"</span>:[<span class="string">'1234'</span>,<span class="string">'joe'</span>]&#125;&#125;)</span><br><span class="line"><span class="comment">//查找user_id为joe或年龄为20</span></span><br><span class="line">db.users.find(&#123;<span class="string">"$or"</span>:[&#123;<span class="string">"user_id"</span>:<span class="string">"joe"</span>&#125;,&#123;<span class="string">"age"</span>:<span class="number">20</span>&#125;]) </span><br><span class="line"><span class="comment">//返回id_num为1，6，11，16等的用户</span></span><br><span class="line">db.users.find(&#123;<span class="string">"id_num"</span>:&#123;<span class="string">"$mod"</span>:[<span class="number">5</span>,<span class="number">1</span>]&#125;&#125;) </span><br><span class="line"><span class="comment">//返回id_num不为1,6,11,16等的用户</span></span><br><span class="line">db.users.find(&#123;<span class="string">"id_num"</span>:&#123;<span class="string">"not"</span>:&#123;<span class="string">"$mod"</span>:[<span class="number">5</span>,<span class="number">1</span>]&#125;&#125;&#125;) </span><br><span class="line"></span><br><span class="line"><span class="comment">//条件句是内层文档的键，修改器是外层文档的键，可对一个键应用多个条件</span></span><br><span class="line">db.users.find(&#123;<span class="string">"age"</span>:&#123;<span class="string">"$lt"</span>:<span class="number">30</span>,<span class="string">"$gt"</span>:<span class="number">20</span>&#125;&#125;) 查找年龄小于<span class="number">30</span>大于<span class="number">20</span></span><br></pre></td></tr></table></figure>
+<h5 id="查询数组">查询数组</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.food.insert(&#123;<span class="string">"fruit"</span>:[<span class="string">"a"</span>,<span class="string">"b"</span>,<span class="string">"c"</span>]&#125;)</span><br><span class="line">db.food.find(&#123;<span class="string">"fruit"</span>:<span class="string">"a"</span>&#125;)</span><br></pre></td></tr></table></figure>
 <p>可以将数组类型的键理解为：数组的每个元素都是整个键的值</p>
-</blockquote>
 <p>$all 多个元素来匹配数组，查找包含$all参数的数组</p>
 <p>也可以直接使用数组来精确匹配，精确匹配时会检查数组顺序</p>
 <p>使用key.index语法指定下标来查询指定位置的元素</p>
 <p>$size 查询长度，$size不能和其他查询子句组合</p>
-<p>$slice 指定要返回的长度</p>
-<p>db.blog.posts.find({},{“comments”:{“$slice”:10}}) 返回前10<br>db.blog.posts.find({},{“comments”:{“$slice”:-10}}) 返回后10<br>db.blog.posts.find({},{“comments”:{“$slice”:[23,10]}}) 返回后第24-33个元素，如果不够10个则返回23个元素后面的所有元素</p>
+<p>$slice 指定要返回的长度<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.blog.posts.find(&#123;&#125;,&#123;<span class="string">"comments"</span>:&#123;<span class="string">"$slice"</span>:<span class="number">10</span>&#125;&#125;) <span class="comment">//返回前10</span></span><br><span class="line">db.blog.posts.find(&#123;&#125;,&#123;<span class="string">"comments"</span>:&#123;<span class="string">"$slice"</span>:-<span class="number">10</span>&#125;&#125;) <span class="comment">//返回后10</span></span><br><span class="line"><span class="comment">//返回后第24-33个元素，如果不够10个则返回23个元素后面的所有元素</span></span><br><span class="line">db.blog.posts.find(&#123;&#125;,&#123;<span class="string">"comments"</span>:&#123;<span class="string">"$slice"</span>:[<span class="number">23</span>,<span class="number">10</span>]&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
 <p>第二个参数用了$slice后，将返回文档所有的键，除非特别声明不返回</p>
-<h5 id="查询内嵌文档">查询内嵌文档</h5><p>db.people.find({“name.first”:”joe”,”name.last”:”Schmoe”})</p>
+<h5 id="查询内嵌文档">查询内嵌文档</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.people.find(&#123;<span class="string">"name.first"</span>:<span class="string">"joe"</span>,<span class="string">"name.last"</span>:<span class="string">"Schmoe"</span>&#125;)</span><br></pre></td></tr></table></figure>
 <p>$elemMatch 将限定条件进行分组，仅当需要对一个内嵌文档的多个键操作时才会用到</p>
-<p>db.blog.find({“comments”:{“$elemMatch”:{“author”:”joe”,”score”:{“$gte”:5}}})<br>在博客中查找作者为joe并且评分大于5的评论</p>
-<p>下面一个查询时错误的：<br>db.blog.find({“comments.author”:”joe”,”comments.score”:{“$gte”:5}})<br>这会直接返回这条blog</p>
-<h4 id="$where">$where</h4><p>db.foo.find({“$where”:function(){<br>    for(var current in this){<br>        for(var other in this){<br>            if (current != other &amp;&amp; this[current]== this[other]){<br>                return true;<br>            }<br>        }<br>    }<br>    return false;<br>}})<br>如果函数返回true，则返回该文档。</p>
-<p>db.foo.find({“$where”:”this.x + this.y==10”})<br>db.foo.find({“$where”:”function(){return this.x+this.y==10;}”})</p>
-<blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.blog.find(&#123;<span class="string">"comments"</span>:&#123;<span class="string">"$elemMatch"</span>:&#123;<span class="string">"author"</span>:<span class="string">"joe"</span>,<span class="string">"score"</span>:&#123;<span class="string">"$gte"</span>:<span class="number">5</span>&#125;&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<p>在博客中查找作者为joe并且评分大于5的评论</p>
+<p>下面一个查询时错误的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.blog.find(&#123;<span class="string">"comments.author"</span>:<span class="string">"joe"</span>,<span class="string">"comments.score"</span>:&#123;<span class="string">"$gte"</span>:<span class="number">5</span>&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这会直接返回这条blog</p>
+<h4 id="$where">$where</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.foo.find(&#123;<span class="string">"$where"</span>:<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> current <span class="keyword">in</span> <span class="keyword">this</span>)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> other <span class="keyword">in</span> <span class="keyword">this</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span> (current != other &amp;&amp; <span class="keyword">this</span>[current]== <span class="keyword">this</span>[other])&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<p>如果函数返回true，则返回该文档。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.foo.find(&#123;<span class="string">"$where"</span>:<span class="string">"this.x + this.y==10"</span>&#125;)</span><br><span class="line">db.foo.find(&#123;<span class="string">"$where"</span>:<span class="string">"function()&#123;return this.x+this.y==10;&#125;"</span>&#125;)</span><br></pre></td></tr></table></figure>
 <p>尽可能用索引作为前置过滤，然后使用$where对结果进行调优</p>
-</blockquote>
-<h4 id="游标">游标</h4><p>var cursor = db.collection.find()<br>while(cursor.hasNext()){<br>    obj = cursor.next()<br>}</p>
+<h4 id="游标">游标</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cursor = db.collection.find()</span><br><span class="line"><span class="keyword">while</span>(cursor.hasNext())&#123;</span><br><span class="line">    obj = cursor.next()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="hasNext()_检测有没有其他结果">hasNext() 检测有没有其他结果</h4><h4 id="next()_返回一条结果">next() 返回一条结果</h4><h4 id="forEach()_迭代游标中的结果">forEach() 迭代游标中的结果</h4><p>find方法总是会返回游标本身，只有要求获得结果时才发送查询，所以可以给游标附加额外的选项</p>
-<p>db.foo.find().sort({“x”:1}).limit(1).skip(10)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.foo.find().sort(&#123;<span class="string">"x"</span>:<span class="number">1</span>&#125;).limit(<span class="number">1</span>).skip(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
 <p>limit  指定返回结果的上限<br>skip 指定忽略结果的数量的上限<br>sort 排序，键值对，键对应文档的键名，值代表排序的方向，1为升序，－1为降序，可指定多个键值对。</p>
-<p>db.c.find().sort({username:1,age:-1})</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.c.find().sort(&#123;username:<span class="number">1</span>,age:-<span class="number">1</span>&#125;)</span><br></pre></td></tr></table></figure>
 <h4 id="对混合类型的键排序">对混合类型的键排序</h4><p>如果一个键例如user_id为混合类型的，包括数字、字符串等，则按照以下顺序排序从小到大：<br>1.最小值<br>2.null<br>3.数字<br>4.字符串<br>5.对象/文档<br>6.数组<br>7.二进制数据<br>8.对象ID<br>9.布尔<br>10.日期<br>11.时间戳<br>12.正则表达式<br>13.最大值</p>
 <h4 id="分页">分页</h4><p>避免使用skip略过大量结果<br>可使用上一次查询的结果作为查询条件来获取下一页</p>
-<h4 id="随机选取文档">随机选取文档</h4><p>可以给文档增加一个额外的随机键”random”:Math.random()<br>然后根据random来查找<br>random = Math.random()<br>result = db.foo.findOne({“random”:{“$gt”:random}})<br>if(result == null){<br>    result = db.foo.findOne({“random”:{“$lt”:random}})<br>}</p>
-<h2 id="索引">索引</h2><p>db.people.ensureIndex({“username”:1})</p>
+<h4 id="随机选取文档">随机选取文档</h4><p>可以给文档增加一个额外的随机键”random”:Math.random()<br>然后根据random来查找</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">random = <span class="built_in">Math</span>.random()</span><br><span class="line">result = db.foo.findOne(&#123;<span class="string">"random"</span>:&#123;<span class="string">"$gt"</span>:random&#125;&#125;)</span><br><span class="line"><span class="keyword">if</span>(result == <span class="literal">null</span>)&#123;</span><br><span class="line">    result = db.foo.findOne(&#123;<span class="string">"random"</span>:&#123;<span class="string">"$lt"</span>:random&#125;&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="索引">索引</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.people.ensureIndex(&#123;<span class="string">"username"</span>:<span class="number">1</span>&#125;)</span><br></pre></td></tr></table></figure>
 
       
     </div>
