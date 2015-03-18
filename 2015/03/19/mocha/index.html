@@ -241,7 +241,7 @@
 <li>—interfaces</li>
 <li>—no-deprecation</li>
 <li>—no-exit</li>
-<li>—no -timeouts</li>
+<li>—no-timeouts</li>
 <li>—opts \<path\></path\></li>
 <li>—prof</li>
 <li>—recursive</li>
@@ -257,6 +257,7 @@
 </code></pre><p>for coffeescript 1.7+</p>
 <pre><code>mocha --compilers <span class="string">coffee:</span>coffee-script<span class="regexp">/register test/</span>test.coffee
 </code></pre><h4 id="-b">-b</h4><p>只显示第一个异常，一般测试用例非常多的时比较有用，不然某个接口变化后全屏报错就会悲剧。</p>
+<h4 id="-t">-t</h4><p>指定超时时间，命令行中添加为全局的设置，也可以在测试用例内部调用<code>timeout()</code>方法单独设置。<br><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">describe <span class="string">'a suite of tests.'</span>,<span class="function">-&gt;</span></span><br><span class="line">    <span class="keyword">this</span>.timeout <span class="number">500</span></span><br><span class="line">    it <span class="string">'should take less than 500ms'</span>,<span class="function"><span class="params">(done)</span>-&gt;</span></span><br><span class="line">        setTimeout done,<span class="number">300</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="Interfaces">Interfaces</h3><h4 id="BDD">BDD</h4><p>我一般只用到<code>BDD</code><br><code>BDD</code> interface 提供了 <code>describe()</code>,<code>context()</code>,<code>it()</code>,<code>before()</code>,<code>after()</code>,<code>beforeEach()</code>,<code>afterEach()</code>。<br><code>context()</code>和<code>describe()</code>没区别。</p>
 <h4 id="TDD">TDD</h4><p><code>TDD</code> interface 提供了<code>suite()</code>,<code>test()</code>,<code>suiteSetup()</code>,<code>suiteTeardown()</code>,<code>setup()</code>,<code>teardown()</code></p>
 <h4 id="Exports">Exports</h4><p>这个没什么好讲的。<br><figure class="highlight coffee"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports =</span><br><span class="line">    <span class="attribute">before</span>:<span class="function">-&gt;</span></span><br><span class="line">    <span class="string">'Array'</span>:</span><br><span class="line">        <span class="string">'#indexOf()'</span>:<span class="function">-&gt;</span></span><br><span class="line">            <span class="string">'should return -1 when not present'</span>:<span class="function">-&gt;</span></span><br><span class="line">                [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>].indexOf(<span class="number">4</span>).should.equal -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
